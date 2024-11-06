@@ -137,8 +137,8 @@ const TransactionDetails = () => {
             </h3>
             {transferTx?.block?.timestamp ? (
               <p className="text-[#000720] font-semibold">
-                {new Date(transferTx.block.timestamp * 1000).toLocaleString()}
-              </p>
+              {new Date(transferTx.block.timestamp * 1000).toLocaleString()}
+            </p>            
             ) : (
               <p className="text-[#000720] font-semibold">No date available</p>
             )}
