@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0f172a, #1e40af);
+  color: white;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+
+.card-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(124, 245, 255, 0.3) 30%,      /* Adjust opacity */
+    rgba(0, 204, 221, 0.3) 70%,        /* Adjust opacity */
+    rgba(79, 117, 255, 0.3) 90%,       /* Adjust opacity */
+    rgba(100, 57, 255, 0.3) 110%       /* Adjust opacity */
+  );
+}
+
+/* Ensures text and other content appear above the background */
+.card-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin-slow 10s linear infinite;
+  }
+
+  .clip-octagon {
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  }
+}
