@@ -39,7 +39,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ transaction }) => {
         </span>{" "}
       </div>
       <div className="flex justify-between items-center mt-2 text-sm text-gray-400">
-        {transferTx && (
+        {transferTx?.block && (
           <span>
             {new Date(transferTx?.block.timestamp*1000).toLocaleDateString()}
           </span>

@@ -16,7 +16,7 @@ const TransactionDetails = () => {
   const [notFound, setNotFound] = useState(false);
   useEffect(() => {
     if (id) {
-        fetchDetails(id);
+      fetchDetails(id);
     }
   }, [id]);
 
@@ -133,10 +133,12 @@ const TransactionDetails = () => {
             <h3 className="text-lg font-bold mb-2 text-[#000720]">
               Date and Time
             </h3>
-            {transferTx && (
+            {transferTx?.block?.timestamp ? (
               <p className="text-[#000720] font-semibold">
-                {new Date(transferTx?.block.timestamp*1000).toLocaleString()}
+                {new Date(transferTx.block.timestamp * 1000).toLocaleString()}
               </p>
+            ) : (
+              <p className="text-[#000720] font-semibold">No date available</p>
             )}
           </div>
         </div>
