@@ -5,4 +5,14 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   base: './', 
+  build: {
+    target: 'esnext',  // Ensure compatibility with modern ES modules
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `[name].[ext]`,
+      },
+    },
+  },
 })
