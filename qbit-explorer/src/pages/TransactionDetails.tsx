@@ -135,7 +135,7 @@ const TransactionDetails = () => {
             </h3>
             {transferTx && (
               <p className="text-[#000720] font-semibold">
-                {new Date(transferTx?.block.timestamp).toLocaleString()}
+                {new Date(transferTx?.block.timestamp*1000).toLocaleString()}
               </p>
             )}
           </div>
