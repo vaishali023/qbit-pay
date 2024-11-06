@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "./dist/node/",
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["ES2022", "DOM"],
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "baseUrl": "src/common",
+    "rootDirs": ["src/common", "src/node"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@crypto/*": ["lib/crypto/*"]
+    }
+  },
+  "include": ["src/modules.d.ts", "src/common", "src/node"]
+}
