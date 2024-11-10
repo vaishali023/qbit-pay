@@ -16,14 +16,13 @@ body {
 .card-gradient {
   background: linear-gradient(
     135deg,
-    rgba(124, 245, 255, 0.3) 30%,      /* Adjust opacity */
-    rgba(0, 204, 221, 0.3) 70%,        /* Adjust opacity */
-    rgba(79, 117, 255, 0.3) 90%,       /* Adjust opacity */
-    rgba(100, 57, 255, 0.3) 110%       /* Adjust opacity */
+    rgba(124, 245, 255, 0.3) 30%,      
+    rgba(0, 204, 221, 0.3) 70%,        
+    rgba(79, 117, 255, 0.3) 90%,     
+    rgba(100, 57, 255, 0.3) 110%      
   );
 }
 
-/* Ensures text and other content appear above the background */
 .card-gradient > * {
   position: relative;
   z-index: 1;

@@ -12,7 +12,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/app" element={<TransactionList />} />
-
         <Route path="/app/transactions/:id" element={<TransactionDetails />} />
       </Routes>
     </Router>
