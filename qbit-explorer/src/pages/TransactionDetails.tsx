@@ -7,6 +7,8 @@ import { getTags } from "../utils/ao/get-tags";
 import argqlClient from "../utils/argqlClient";
 import { Transaction } from "@qbit-pay/sdk";
 import { FadeLoader } from "react-spinners";
+
+
 const TransactionDetails = () => {
   const { id } = useParams();
   const [qrImage, setQrImage] = useState<string | null>(null);

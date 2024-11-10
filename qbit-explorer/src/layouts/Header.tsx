@@ -1,68 +1,98 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { dryrunMessage } from "../utils/ao/message";
 import { getTags } from "../utils/ao/get-tags";
 
 const Header = () => {
-  const searchTimeoutRef = useRef<number | null>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const notFoundTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [search, setSearch] = useState<string>("");
-  const [result, setResult] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+
+  const [result, setResult] = useState<string | null>(null);
   const [fetching, setFetching] = useState<boolean>(false);
   const [notFound, setNotFound] = useState<boolean>(false);
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Clear search input when navigating back to the home page
   useEffect(() => {
-    if (search.length > 0) {
-      handleSearch();
-    } else {
-      setResult("");
+    if (location.pathname === "/") {
+      setSearch("");
+      setResult(null);
+      setNotFound(false);
     }
+  }, [location.pathname]);
+
+  // Debounce effect for search input
+  useEffect(() => {
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    };
   }, [search]);
+
+  // Perform search when `debouncedSearch` updates
+  useEffect(() => {
+    if (debouncedSearch) {
+      handleSearch(debouncedSearch);
+    } else {
+      setResult(null);
+      setNotFound(false); // Reset if search is cleared
+    }
+  }, [debouncedSearch]);
 
   function onSearchInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-
-    // Clear any existing timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
-    // Set new timeout to debounce the search
-    searchTimeoutRef.current = setTimeout(() => {
-      // Perform actual search operation here after 500ms of no typing
-      setSearch(value);
-    }, 500);
+    setSearch(value); // Triggers debounce
   }
-  async function handleSearch() {
+
+  async function handleSearch(query: string) {
     setFetching(true);
     setNotFound(false);
-    setResult("");
-    try {
-      const { Messages } = await dryrunMessage({
-        tags: getTags({
-          Action: "Get-Transaction",
-          "QBit-Id": search,
-        }),
-      });
-      const msg = Messages[0];
+    setResult(null);
 
-      if (!msg) {
+    // Generate tags for the search
+    const tags = getTags({
+      Action: "Get-Transaction",
+      "QBit-Id": query,
+    });
+
+    try {
+      const response = await dryrunMessage({ tags });
+
+      const { Messages } = response || {};
+      if (!Messages || Messages.length === 0) {
         setNotFound(true);
+
+        // Auto-hide 'not found' message after 3 seconds
+        if (notFoundTimeoutRef.current)
+          clearTimeout(notFoundTimeoutRef.current);
+        notFoundTimeoutRef.current = setTimeout(() => setNotFound(false), 3000);
       } else {
-        const msgParsed = JSON.parse(msg.Data);
+        const msgParsed = JSON.parse(Messages[0].Data);
         setResult(msgParsed.qbitId);
+        setNotFound(false);
       }
-      // @ts-nocheck
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
       setNotFound(true);
+      if (notFoundTimeoutRef.current) clearTimeout(notFoundTimeoutRef.current);
+      notFoundTimeoutRef.current = setTimeout(() => setNotFound(false), 3000);
     }
     setFetching(false);
   }
 
   function handleResultClick() {
     setSearch("");
-    setResult("");
+    setResult(null);
     setNotFound(false);
     setFetching(false);
     navigate(`/app/transactions/${result}`);
@@ -80,7 +110,7 @@ const Header = () => {
                 <input
                   onChange={onSearchInputChange}
                   type="text"
-                  placeholder="Search transactions..."
+                  placeholder="Search transactions by Qbit Id..."
                   className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded flex items-center text-white focus:outline-none focus:border-blue-500"
                 />
                 <svg
